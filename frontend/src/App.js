@@ -1,6 +1,60 @@
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
+import { useReactMediaRecorder } from "react-media-recorder";
 import "./App.css";
 
 function App() {
+  const { status, startRecording, stopRecording, mediaBlobUrl } =
+    useReactMediaRecorder({ video: false, type: "audio/wav" });
+
+  useEffect(() => {
+    const getData = async (mediaBlobUrl) => {
+      let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
+      console.log(blob);
+      var filename = new Date().toISOString();
+      var fd = new FormData();
+      fd.append("audio_data", blob, filename);
+      axios.post(`//localhost:8888/audio`, fd, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    };
+    if (mediaBlobUrl) {
+      console.log(mediaBlobUrl);
+      getData(mediaBlobUrl);
+    }
+  }, [mediaBlobUrl]);
+
+  const {
+    transcript,
+    interimTranscript,
+    finalTranscript,
+    resetTranscript,
+    listening,
+    stopListening,
+    startListening,
+  } = useSpeechRecognition();
+
+  const [animate, setAnimate] = useState();
+
+  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    return null;
+  }
+
+  if (!SpeechRecognition.browserSupportsSpeechRecognition()) {
+    console.log(
+      "Your browser does not support speech recognition software! Try Chrome desktop, maybe?"
+    );
+  }
+  const listenContinuously = () => {
+    SpeechRecognition.startListening({
+      // continuous: true,
+      language: "en-GB",
+    });
+  };
+
   return (
     <div className="App">
       <div className="bg-black-50 min-h-screen flex items-center justify-center px-16">
@@ -11,7 +65,7 @@ function App() {
           <div className="m-8 relative space-y-4">
             <div className="p-5 bg-white rounded-lg flex items-center justify-between space-x-8">
               <div className="flex-1">
-                <div className="h-4 w-48 bg-gray-300 rounded"></div>
+                <p>{interimTranscript ? interimTranscript : finalTranscript}</p>
               </div>
               <div>
                 <div className="w-24 h-6 rounded-lg bg-purple-300"></div>
@@ -36,9 +90,29 @@ function App() {
           </div>
         </div>
       </div>
-      <div className="mic cursor-pointer">
+      <div
+        className="mic cursor-pointer"
+        // onClick={
+        //   listening
+        //     ? () => {
+        //         // resetTranscript();
+        //         SpeechRecognition.stopListening();
+        //       }
+        //     : SpeechRecognition.startListening
+        // }
+        onMouseDown={() => {
+          listenContinuously();
+          setAnimate(true);
+          startRecording();
+        }}
+        onMouseUp={() => {
+          SpeechRecognition.stopListening();
+          setAnimate(false);
+          stopRecording();
+        }}
+      >
         <i className="mic-icon"></i>
-        <div className="mic-shadow"></div>
+        <div className={`mic-shadow ${animate ? "active" : ""}`}></div>
       </div>
     </div>
   );
