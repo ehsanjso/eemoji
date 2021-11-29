@@ -8,7 +8,7 @@ router.post("/audio", upload.single("audio_data"), (req, res) => {
   let uploadLocation =
     "/Users/ehsanjso/Desktop/Waterloo/Third term/eemoji/backend/" +
     "uploads/" +
-    "test.wav"; // where to save the file to. make sure the incoming name has a .wav extension
+    req.file / originalname; // where to save the file to. make sure the incoming name has a .wav extension
 
   fs.writeFileSync(
     uploadLocation,
