@@ -141,11 +141,11 @@ function App() {
             <i className="mic-icon"></i>
             <div className={`mic-shadow ${animate ? "active" : ""}`}></div>
           </div>
+
+          {isFetchInProg ? <Loading /> : undefined}
         </div>
         <div className="bottom_band"></div>
       </div>
-
-      {isFetchInProg ? <Loading /> : undefined}
     </div>
   );
 }
