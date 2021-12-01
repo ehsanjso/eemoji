@@ -1,11 +1,20 @@
 body {
-  background: #3b0e68;
-  background: radial-gradient(circle, #3b0e68 0%, #1a084e 100%);
+  /* background: #3b0e68;
+  background: radial-gradient(circle, #3b0e68 0%, #1a084e 100%); */
+}
+
+.App {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url("./assets/leone-venter-VieM9BdZKFo-unsplash.jpg");
+  background-size: cover;
 }
 
 .mic {
   position: absolute;
-  bottom: 200px;
+  bottom: 60px;
   left: 50%;
   transform: translate(-50%, -50%) scale(0.2);
   color: #fff;
@@ -13,11 +22,11 @@ body {
 }
 
 .mic:hover {
-  transform: scale(0.25);
+  transform: scale(0.22);
 }
 
 .mic:active {
-  transform: scale(0.28);
+  transform: scale(0.23);
 }
 
 .mic::before,
@@ -119,4 +128,185 @@ body {
   to {
     transform: translate(-50%, -50%) rotate(360deg);
   }
+}
+
+.loading {
+  width: 100%;
+  height: 100%;
+  z-index: 55;
+  position: absolute;
+  left: 0;
+  top: 55px;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.loading-indicator {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 65;
+  transform: translate(-50%, -50%);
+}
+
+.square {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border: 4px solid #fff;
+  animation: square 2s infinite ease;
+}
+
+.square-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  animation: square-inner 2s infinite ease-in;
+}
+
+@keyframes square {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  25% {
+    transform: rotate(180deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  75% {
+    transform: rotate(360deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes square-inner {
+  0% {
+    height: 0%;
+  }
+
+  25% {
+    height: 0%;
+  }
+
+  50% {
+    height: 100%;
+  }
+
+  75% {
+    height: 100%;
+  }
+
+  100% {
+    height: 0%;
+  }
+}
+
+.watch {
+  width: 16.7em;
+  display: inline-block;
+  margin: 0 4em;
+}
+
+.watch_face {
+  height: 15em;
+  width: 15em;
+  border-radius: 50%;
+  background: #2d2c2d;
+  border: 8px solid #131415;
+  box-shadow: 0 15px 24px rgb(0 0 0 / 22%), 0 19px 76px rgb(0 0 0 / 30%);
+  position: relative;
+  z-index: 99;
+  /* box-shadow: 0 0 6px #555; */
+  overflow: hidden;
+}
+
+.watch_face::before {
+  position: absolute;
+  content: "";
+  width: 12px;
+  padding-bottom: 12px;
+  background-color: transparent;
+  z-index: -9;
+  display: block;
+  height: 0;
+  width: 0;
+  border-style: solid;
+  border-width: 0 300px 300px 0px;
+  border-color: transparent transparent rgba(255, 255, 255, 0.04) transparent;
+}
+
+.watch_display {
+  position: relative;
+  z-index: 99;
+  border-radius: 50%;
+  height: 96.75%;
+  width: 96.75%;
+  border: 4px solid #555;
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0) 50%,
+    rgba(255, 255, 255, 0.9) 100%
+  );
+  -webkit-transform: rotate(30deg);
+  transform: rotate(30deg);
+}
+
+.watch_button {
+  position: relative;
+  left: 15.46em;
+  height: 15px;
+  width: 12px;
+  bottom: 23em;
+  background: #787878;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-top: 1px dotted #999;
+  border-bottom: 1px dotted #999;
+  border-right: 1px dotted #999;
+  cursor: pointer;
+}
+
+.top_band,
+.bottom_band {
+  width: 7.5em;
+  background: #1f1e1f;
+  position: relative;
+  margin-left: 3.75em;
+  margin-right: 3.75em;
+  height: 7.5em;
+  /* border-left: 8px solid #777;
+  border-right: 8px solid #777; */
+  border-radius: 5px;
+  /* box-shadow: 0 0 12px #555; */
+  box-shadow: 0 15px 24px rgb(0 0 0 / 22%), 0 19px 76px rgb(0 0 0 / 30%);
+}
+
+.top_band {
+  bottom: -1.75em;
+}
+
+.bottom_band {
+  top: -1.75em;
+  height: 8.5em;
+}
+
+.screen_image {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  top: -15em;
+}
+
+.text-center {
+  text-align: center;
 }
