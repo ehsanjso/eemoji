@@ -14,19 +14,19 @@ body {
 
 .mic {
   position: absolute;
-  bottom: 60px;
+  bottom: 40px;
   left: 50%;
-  transform: translate(-50%, -50%) scale(0.2);
+  transform: translate(-50%, -50%) scale(0.13);
   color: #fff;
   transition: 0.2s all ease;
 }
 
 .mic:hover {
-  transform: scale(0.22);
+  transform: scale(0.14);
 }
 
 .mic:active {
-  transform: scale(0.23);
+  transform: scale(0.15);
 }
 
 .mic::before,
@@ -308,4 +308,9 @@ body {
 
 .text-center {
   text-align: center;
+}
+
+.emoji {
+  width: 50px;
+  cursor: pointer;
 }

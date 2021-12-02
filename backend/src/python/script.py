@@ -104,3 +104,15 @@ preds = model.predict(x)
 preds=preds.argmax(axis=1)
 
 print(preds[0])
+
+
+import librosa
+import numpy as np
+
+audio_path = path_
+x , sr = librosa.load(audio_path)
+
+mfccs = librosa.feature.mfcc(x, sr=sr)
+
+mfccs_means = np.mean(mfccs, axis = 1)
+print(",".join(str(e) for e in mfccs_means))

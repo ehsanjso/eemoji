@@ -26,11 +26,12 @@ router.post("/audio", upload.single("audio_data"), (req, res) => {
   // collect data from script
   python.stdout.on("data", function (data) {
     dataToSend = data.toString();
+    console.log(dataToSend);
     res.status(200).send(dataToSend); //send back that everything went ok
   });
 
   python.stderr.on("data", function (data) {
-    // console.log(`Error: ${data.toString()}`);
+    console.log(`Error: ${data.toString()}`);
   });
   // in close event we are sure that stream from child process is closed
   python.on("close", (code) => {

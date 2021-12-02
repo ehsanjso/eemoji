@@ -4,6 +4,8 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useReactMediaRecorder } from "react-media-recorder";
+import normalize from "array-normalize";
+import { useSpring, animated } from "react-spring";
 import "./App.css";
 import Loading from "./Loading";
 
@@ -29,13 +31,28 @@ const emojiObj = {
   8: [":open_mouth:", ":astonished:"],
 };
 
+const emojiSVGObj = {
+  1: ["1F610", "1F636"],
+  2: ["1F60C", "1F607"],
+  3: ["1F600", "1F601", "1F602"],
+  4: ["1F625", "1F622", "1F62D"],
+  5: ["1F620", "1F621", "1F92C"],
+  6: ["1F627", "1F628", "1F630"],
+  7: ["1F922", "1F92E"],
+  8: ["1F62E", "1F62F"],
+};
+
 function App() {
   const [isFetchInProg, setIsFetchInProg] = useState(false);
   const [emotion, setEmotion] = useState(undefined);
+  const [animation, setAnimation] = useState([]);
   const [emotionDegree, setEmotionDegree] = useState(0);
   const { status, startRecording, stopRecording, mediaBlobUrl } =
     useReactMediaRecorder({ video: false, type: "audio/wav" });
 
+  const [styles, api] = useSpring(() => ({ marginTop: 0 }));
+
+  console.log(styles);
   useEffect(() => {
     const getData = async (mediaBlobUrl) => {
       let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
@@ -48,8 +65,20 @@ function App() {
       });
       setIsFetchInProg(false);
 
-      console.log(emotionObj[res.data]);
-      setEmotion(res.data);
+      const data = res.data.split(/\r?\n/);
+      const emotionData = data[0];
+      const animationData = normalize(data[1].split(",").map(Number));
+
+      setEmotion(emotionData);
+      setAnimation(animationData);
+      api({
+        from: { marginTop: 0 },
+        to: animationData
+          .map((el) => ({ marginTop: el * 30 }))
+          .concat({ marginTop: 0 }),
+        loop: true,
+      });
+
       setEmotionDegree(0);
     };
     if (mediaBlobUrl) {
@@ -96,11 +125,23 @@ function App() {
               <div className="absolute top-0 -right-4 w-24 h-24 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-2000"></div>
               <div className="absolute -bottom-8 left-20 w-24 h-24 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl opacity-70 animate-blob animation-delay-4000"></div>
               <div className="m-8 relative space-y-4">
-                <div className="p-5 rounded-lg flex items-center justify-between space-x-8">
-                  <div className="flex-1">
+                <div className="p-1 rounded-lg flex items-center justify-between space-x-8">
+                  <div className="flex-1 text-white">
                     <p>
                       {interimTranscript ? interimTranscript : finalTranscript}
                     </p>
+                    <div className="flex items-center justify-center p-1 rounded-lg space-x-8">
+                      {emotion &&
+                        emojiSVGObj[emotion].map((el) => (
+                          <animated.img
+                            src={`./openmoji-svg-color/${el}.svg`}
+                            alt={el}
+                            className="emoji"
+                            key={el}
+                            style={styles}
+                          />
+                        ))}
+                    </div>
                   </div>
                   {/* <div>
                     <div className="w-24 h-6 rounded-lg "></div>
@@ -131,6 +172,7 @@ function App() {
               listenContinuously();
               setAnimate(true);
               startRecording();
+              setEmotion(undefined);
             }}
             onMouseUp={() => {
               SpeechRecognition.stopListening();
