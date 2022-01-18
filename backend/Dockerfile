@@ -5,6 +5,13 @@ RUN apt-get update -y  \
 
 WORKDIR /app/
 
+RUN mkdir uploads
+RUN apt-get update -y
+RUN apt-get install -y python3-pip python-dev build-essential libsndfile1-dev
+RUN pip install -U scikit-learn scipy matplotlib pandas scipy numpy librosa ipython
+RUN pip install tensorflow
+
+
 ADD package.json yarn.lock ./
 RUN yarn
 
