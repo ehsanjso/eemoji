@@ -53,6 +53,18 @@ function App() {
   const [styles, api] = useSpring(() => ({ marginTop: 0 }));
 
   useEffect(() => {
+    const permissions = navigator.mediaDevices.getUserMedia({
+      audio: true,
+      video: false,
+    });
+    permissions
+      .then((stream) => {})
+      .catch((err) => {
+        console.log(`${err.name} : ${err.message}`);
+      });
+  }, []);
+
+  useEffect(() => {
     const getData = async (mediaBlobUrl) => {
       let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
       var filename = new Date().toISOString();
