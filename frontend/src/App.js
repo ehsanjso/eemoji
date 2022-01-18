@@ -52,7 +52,6 @@ function App() {
 
   const [styles, api] = useSpring(() => ({ marginTop: 0 }));
 
-  console.log(styles);
   useEffect(() => {
     const getData = async (mediaBlobUrl) => {
       let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
@@ -74,7 +73,7 @@ function App() {
       api({
         from: { marginTop: 0 },
         to: animationData
-          .map((el) => ({ marginTop: el * 30 }))
+          .map((el) => ({ marginTop: el * 20 }))
           .concat({ marginTop: 0 }),
         loop: true,
       });

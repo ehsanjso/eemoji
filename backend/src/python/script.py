@@ -37,10 +37,50 @@ from sklearn.preprocessing import LabelEncoder
 import warnings
 warnings.filterwarnings('ignore')
 
-from tensorflow.keras.models import load_model
+from tensorflow.keras.models import load_model, Sequential, Model, model_from_json
+from tensorflow.keras import optimizers
 model=load_model("src/python/Emotion_Model (1).h5")
 
 path_ = 'uploads/' + sys.argv[1] + ".wav"
+
+# loading json and model architecture 
+# json_file = open('src/python/model_json (2).json', 'r')
+# loaded_model_json = json_file.read()
+# json_file.close()
+# loaded_model = model_from_json(loaded_model_json)
+
+# # load weights into new model
+# loaded_model.load_weights("src/python/Emotion_Model (2).h5")
+# loaded_model.compile(loss='categorical_crossentropy', metrics=['accuracy'])
+
+# X, sample_rate = librosa.load(path_
+#                               ,res_type='kaiser_fast'
+#                               ,duration=2.5
+#                               ,sr=44100
+#                               ,offset=0.5
+#                              )
+
+# sample_rate = np.array(sample_rate)
+# mfccs = np.mean(librosa.feature.mfcc(y=X, sr=sample_rate, n_mfcc=13),axis=0)
+# newdf = pd.DataFrame(data=mfccs).T
+
+# # Apply predictions
+# newdf= np.expand_dims(newdf, axis=2)
+# newpred = loaded_model.predict(newdf, 
+#                          batch_size=16, 
+#                          verbose=0)
+#                          # Get the final predicted label
+
+# # filename = 'src/python/labels'
+# # infile = open(filename,'rb')
+# # lb = pickle.load(infile)
+# # infile.close()
+
+# # Get the final predicted label
+# final = newpred.argmax(axis=1)
+# final = final.astype(int).flatten()
+# # final = (lb.inverse_transform((final)))
+# print(final[0]) #emo(final) #gender(final) 
 
 s = []
 
