@@ -59,7 +59,7 @@ function App() {
       var fd = new FormData();
       fd.append("audio_data", blob, filename);
       setIsFetchInProg(true);
-      const res = await axios.post(`//localhost:8888/audio`, fd, {
+      const res = await axios.post(`//161.35.11.4:8080/audio`, fd, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setIsFetchInProg(false);
