@@ -8,7 +8,8 @@ const WaveFile = require("wavefile").WaveFile;
 
 router.post("/audio", upload.single("audio_data"), (req, res) => {
   console.log(req.file);
-  let uploadLocation = "/app/" + "uploads/" + req.file.originalname + ".wav"; // where to save the file to. make sure the incoming name has a .wav extension
+  // let uploadLocation = "/app/" + "uploads/" + req.file.originalname + ".wav"; // where to save the file to. make sure the incoming name has a .wav extension
+  let uploadLocation = "uploads/" + req.file.originalname + ".wav"; // where to save the file to. make sure the incoming name has a .wav extension
 
   // Load a wav file buffer as a WaveFile object
 

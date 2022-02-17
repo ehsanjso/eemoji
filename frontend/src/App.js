@@ -4,10 +4,11 @@ import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
 import { useReactMediaRecorder } from "react-media-recorder";
+import AudioReactRecorder, { RecordState } from "audio-react-recorder";
 import normalize from "array-normalize";
 import { useSpring, animated } from "react-spring";
-import "./App.css";
 import Loading from "./Loading";
+import "./App.css";
 
 const emotionObj = {
   1: "neutral",
@@ -47,8 +48,9 @@ function App() {
   const [emotion, setEmotion] = useState(undefined);
   const [animation, setAnimation] = useState([]);
   const [emotionDegree, setEmotionDegree] = useState(0);
-  const { status, startRecording, stopRecording, mediaBlobUrl } =
-    useReactMediaRecorder({ video: false, type: "audio/wav" });
+  const [recordState, setRecordState] = useState();
+  // const { status, startRecording, stopRecording, mediaBlobUrl } =
+  //   useReactMediaRecorder({ video: false, type: "audio/wav" });
 
   const [styles, api] = useSpring(() => ({ marginTop: 0 }));
 
@@ -64,42 +66,76 @@ function App() {
       });
   }, []);
 
-  useEffect(() => {
-    const getData = async (mediaBlobUrl) => {
-      let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
-      var filename = new Date().toISOString();
-      var fd = new FormData();
-      fd.append("audio_data", blob, filename);
-      setIsFetchInProg(true);
-      const res = await axios.post(
-        `//hci-jian.cs.uwaterloo.ca:8080/audio`,
-        fd,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-        }
-      );
-      setIsFetchInProg(false);
+  const start = () => {
+    setRecordState(RecordState.START);
+  };
 
-      const data = res.data.split(/\r?\n/);
-      const emotionData = data[0];
-      const animationData = normalize(data[1].split(",").map(Number));
+  const stop = () => {
+    setRecordState(RecordState.STOP);
+  };
 
-      setEmotion(emotionData);
-      setAnimation(animationData);
-      api({
-        from: { marginTop: 0 },
-        to: animationData
-          .map((el) => ({ marginTop: el * 20 }))
-          .concat({ marginTop: 0 }),
-        loop: true,
-      });
+  //audioData contains blob and blobUrl
+  const onStop = async (audioData) => {
+    console.log("audioData", audioData);
+    let blob = audioData.blob;
+    var filename = new Date().toISOString();
+    var fd = new FormData();
+    fd.append("audio_data", blob, filename);
+    setIsFetchInProg(true);
+    const res = await axios.post(`//localhost:8888/audio`, fd, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    setIsFetchInProg(false);
 
-      setEmotionDegree(0);
-    };
-    if (mediaBlobUrl) {
-      getData(mediaBlobUrl);
-    }
-  }, [mediaBlobUrl]);
+    const data = res.data.split(/\r?\n/);
+    const emotionData = data[0];
+    const animationData = normalize(data[1].split(",").map(Number));
+
+    setEmotion(emotionData);
+    setAnimation(animationData);
+    api({
+      from: { marginTop: 0 },
+      to: animationData
+        .map((el) => ({ marginTop: el * 20 }))
+        .concat({ marginTop: 0 }),
+      loop: true,
+    });
+
+    setEmotionDegree(0);
+  };
+
+  // useEffect(() => {
+  //   const getData = async (mediaBlobUrl) => {
+  //     let blob = await fetch(mediaBlobUrl).then((r) => r.blob());
+  //     var filename = new Date().toISOString();
+  //     var fd = new FormData();
+  //     fd.append("audio_data", blob, filename);
+  //     setIsFetchInProg(true);
+  //     const res = await axios.post(`//localhost:8888/audio`, fd, {
+  //       headers: { "Content-Type": "multipart/form-data" },
+  //     });
+  //     setIsFetchInProg(false);
+
+  //     const data = res.data.split(/\r?\n/);
+  //     const emotionData = data[0];
+  //     const animationData = normalize(data[1].split(",").map(Number));
+
+  //     setEmotion(emotionData);
+  //     setAnimation(animationData);
+  //     api({
+  //       from: { marginTop: 0 },
+  //       to: animationData
+  //         .map((el) => ({ marginTop: el * 20 }))
+  //         .concat({ marginTop: 0 }),
+  //       loop: true,
+  //     });
+
+  //     setEmotionDegree(0);
+  //   };
+  //   if (mediaBlobUrl) {
+  //     getData(mediaBlobUrl);
+  //   }
+  // }, [mediaBlobUrl]);
 
   const {
     transcript,
@@ -181,18 +217,26 @@ function App() {
               </div>
             </div>
           </div>
+          <AudioReactRecorder
+            state={recordState}
+            onStop={onStop}
+            canvasWidth={0}
+            canvasHeight={0}
+          />
           <div
             className="mic cursor-pointer"
             onMouseDown={() => {
               listenContinuously();
               setAnimate(true);
-              startRecording();
+              // startRecording();
+              start();
               setEmotion(undefined);
             }}
             onMouseUp={() => {
               SpeechRecognition.stopListening();
               setAnimate(false);
-              stopRecording();
+              stop();
+              // stopRecording();
             }}
           >
             <i className="mic-icon"></i>
